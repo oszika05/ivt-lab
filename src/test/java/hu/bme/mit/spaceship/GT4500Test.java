@@ -135,11 +135,29 @@ public class GT4500Test {
     verify(secondaryStoreMock, never()).fire(anyInt());
   }
 
+  @Test
+  public void fireTorpedo_When_SecondaryIsEmpty_FirePrimaryAgain() {
+    // Arrange
+    when(primaryStoreMock.isEmpty()).thenReturn(false);
+    when(primaryStoreMock.fire(1)).thenReturn(true);
+    when(secondaryStoreMock.isEmpty()).thenReturn(true);
+    when(secondaryStoreMock.fire(1)).thenReturn(true);
+
+    // Act
+    ship.fireTorpedo(FiringMode.SINGLE);
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    verify(primaryStoreMock, times(2)).fire(anyInt());
+    verify(secondaryStoreMock, never()).fire(anyInt());
+  }
+
 
   // fire in all mode: both torpedo fires
   // first time primary is fired
   // second time secondary is fired
   // if the primary is empty, it starts with secondary
   // if one fails, nothing is fired (not even the second)
+  // if secondary is empty fire primary again
 
 }
